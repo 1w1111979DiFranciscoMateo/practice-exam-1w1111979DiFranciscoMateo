@@ -4,49 +4,121 @@
         <!--Informacion del Usuario-->
         <div class="row mt-4 mb-4">
             <div class="col">
-                <label for="name" class="form-label">Nombre</label>
-                <input type="text" id="name" class="form-control" formControlName="name">
+                <label for="customerName" class="form-label">Nombre</label>
+                <input type="text" id="customerName" class="form-control" formControlName="customerName">
+                @if (form.controls["customerName"]; as customerName) {
+                    @if (customerName.touched && customerName.invalid) {
+                        @if (customerName.getError('required')) {
+                            <span style="color: red;">Debe ingresar un nombre</span>
+                        }
+                        @if (customerName.getError('minlength')) {
+                            <span style="color: red;">El nombre debe tener 3 caracteres como minimo</span>
+                        }
+                    }
+                }
             </div>
             <div class="col">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" id="email" class="form-control" formControlName="email">
+                @if (form.controls["email"]; as email) {
+                    @if (email.touched && email.invalid) {
+                        @if (email.getError('required')) {
+                            <span style="color: red;">Debe ingresar un email</span>
+                        }
+                        @if (email.getError('email')) {
+                            <span style="color: red;">El email debe ser valido</span>
+                        }
+                    }
+                }
             </div>
         </div>
         <!--Lista de Productos (FormArray)-->
-        <div formArrayName="products" class="card mb-4">
+        <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5>Productos</h5>
                 <button type="button" class="btn btn-primary" (click)="onNewProduct()">+</button>
             </div>
-            <div class="card-body">
-                @for (item of products.controls; track $index) {
+            <div formArrayName="products" class="card-body">
+                @for (item of products.controls; track $index;) {
                     <div class="row mb-4" [formGroupName]="$index">
+                        <h5>Producto #{{$index + 1}}</h5>
                         <div class="col">
                             <label for="product" class="form-label">Producto</label>
                             <select id="product" class="form-select" formControlName="product">
                                 @for (product of productsArray; track $index) {
-                                    <option value="product.id">{{ product.name }}</option>
+                                    <option [value]="product.id">{{ product.name }}</option>
                                 }
                             </select>
+                            @if (item.get('product')?.touched && item.get('product')?.invalid) {
+                                <span style="color: red;">Debe seleccionar un producto</span>
+                            }
                         </div>
                         <div class="col">
                             <label for="quantity" class="form-label">Cantidad</label>
                             <input type="number" id="quantity" class="form-control" formControlName="quantity">
+                            @if (item.get('quantity')?.touched && item.get('quantity')?.invalid) {
+                                @if (item.get('quantity')?.errors?.['required']) {
+                                    <span style="color: red;">Debe ingresar una cantidad</span>
+                                }
+                                @if (item.get('quantity')?.errors?.['min']) {
+                                    <span style="color: red;">La cantidad debe ser al menos 1</span>
+                                }
+                                @if (item.get('quantity')?.errors?.['max']) {
+                                    <span style="color: red;">La cantidad no puede ser mayor al stock disponible</span>
+                                }
+                            }
                         </div>
                         <div class="col">
                             <label for="price" class="form-label">Precio</label>
-                            <input type="number" id="price" class="form-control" formControlName="price" readonly style="background-color:lightgray">
+                            <span class="form-control" readonly style="background-color:lightgray">{{item.get('price')?.value | currency}}</span>
                         </div>
                         <div class="col">
                             <label for="stock" class="form-label">Stock</label>
-                            <input type="number" id="stock" class="form-control" formControlName="stock" readonly style="background-color:lightgray">
+                            <span class="form-control" readonly style="background-color:lightgray">{{item.get('stock')?.value}}</span>
                         </div>
                         <div class="col">
                             <button type="button" class="btn btn-danger" (click)="onDeleteProduct($index)">X</button>
                         </div>
                     </div>
                 }
+                <div>
+                    @if (products.invalid  && products.hasError('minLengthArray')) {
+                        <span style="color: red;">La orden debe tener al menos 1 producto</span>
+                    }
+                    @if (products.invalid && products.hasError('maxLengthArray')) {
+                        <span style="color: red;">La orden no puede tener más de 10 productos</span>
+                    }
+                </div>
             </div>
+        </div>
+        <!--lista de productos sleeccionadas-->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Productos Seleccionados</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    @for (item of products.controls; track $index) {
+                        <li>
+                            {{ getProductName(item.get('product')?.value) }} -
+                            Cantidad: {{ item.get('quantity')?.value }} - 
+                            Precio: {{ item.get('price')?.value | currency}} - 
+                            Stock: {{item.get('stock')?.value}}
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <!--Total-->
+        <div class="card mb-4">
+            <div class="card-body align-items-center row">
+                <label for="total" class="form-label col">Total</label>
+                <span class="form-control col">{{form.controls['total'].value | currency}}</span>
+            </div>
+        </div>
+        <!--Boton Create Order-->
+        <div class="mb-4">
+            <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Create Order</button>
         </div>
     </form>
 </div>

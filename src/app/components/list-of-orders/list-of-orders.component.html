@@ -1,1 +1,35 @@
-<p>list-of-orders works!</p>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Orders</h2>
+        <button class="btn btn-primary" [routerLink]="['/create-order']" routerLinkActive="active">Create New Order</button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <input type="text" class="form-control mb-4" placeholder="Search by customer name or email...">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Codígo de orden</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Productos</th>
+                        <th scope="col">Fecha de compra</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (order of ordersArray; track $index) {
+                    <tr>
+                        <td>{{ order.orderCode }}</td>
+                        <td>{{ order.customerName }}</td>
+                        <td>{{ order.email }}</td>
+                        <td>{{ order.products.length + " items"}}</td>
+                        <td>{{ order.timestamp | date:'dd/MM/yyyy'}}</td>
+                        <td>{{ order.total | currency }}</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
