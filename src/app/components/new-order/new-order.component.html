@@ -9,10 +9,10 @@
                 @if (form.controls["customerName"]; as customerName) {
                     @if (customerName.touched && customerName.invalid) {
                         @if (customerName.getError('required')) {
-                            <span style="color: red;">Debe ingresar un nombre</span>
+                            <span class="text-danger">Debe ingresar un nombre</span>
                         }
                         @if (customerName.getError('minlength')) {
-                            <span style="color: red;">El nombre debe tener 3 caracteres como minimo</span>
+                            <span class="text-danger">El nombre debe tener 3 caracteres como minimo</span>
                         }
                     }
                 }
@@ -23,10 +23,10 @@
                 @if (form.controls["email"]; as email) {
                     @if (email.touched && email.invalid) {
                         @if (email.getError('required')) {
-                            <span style="color: red;">Debe ingresar un email</span>
+                            <span class="text-danger">Debe ingresar un email</span>
                         }
                         @if (email.getError('email')) {
-                            <span style="color: red;">El email debe ser valido</span>
+                            <span class="text-danger">El email debe ser valido</span>
                         }
                     }
                 }
@@ -50,7 +50,7 @@
                                 }
                             </select>
                             @if (item.get('product')?.touched && item.get('product')?.invalid) {
-                                <span style="color: red;">Debe seleccionar un producto</span>
+                                <span class="text-danger">Debe seleccionar un producto</span>
                             }
                         </div>
                         <div class="col">
@@ -58,13 +58,13 @@
                             <input type="number" id="quantity" class="form-control" formControlName="quantity">
                             @if (item.get('quantity')?.touched && item.get('quantity')?.invalid) {
                                 @if (item.get('quantity')?.errors?.['required']) {
-                                    <span style="color: red;">Debe ingresar una cantidad</span>
+                                    <span class="text-danger">Debe ingresar una cantidad</span>
                                 }
                                 @if (item.get('quantity')?.errors?.['min']) {
-                                    <span style="color: red;">La cantidad debe ser al menos 1</span>
+                                    <span class="text-danger">La cantidad debe ser al menos 1</span>
                                 }
                                 @if (item.get('quantity')?.errors?.['max']) {
-                                    <span style="color: red;">La cantidad no puede ser mayor al stock disponible</span>
+                                    <span class="text-danger">La cantidad no puede ser mayor al stock disponible</span>
                                 }
                             }
                         </div>
@@ -76,17 +76,21 @@
                             <label for="stock" class="form-label">Stock</label>
                             <span class="form-control" readonly style="background-color:lightgray">{{item.get('stock')?.value}}</span>
                         </div>
-                        <div class="col">
+                        <div class="col-md-1 d-flex align-items-end">
                             <button type="button" class="btn btn-danger" (click)="onDeleteProduct($index)">X</button>
                         </div>
                     </div>
                 }
                 <div>
+                    <!--Validaciones generales productos-->
                     @if (products.invalid  && products.hasError('minLengthArray')) {
                         <span style="color: red;">La orden debe tener al menos 1 producto</span>
                     }
                     @if (products.invalid && products.hasError('maxLengthArray')) {
                         <span style="color: red;">La orden no puede tener más de 10 productos</span>
+                    }
+                    @if (products.invalid && products.hasError('duplicateProducts')) {
+                        <span class="text-danger">El producto ya ha sido seleccionado</span>
                     }
                 </div>
             </div>

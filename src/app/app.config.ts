@@ -10,6 +10,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes),
-    provideHttpClient()
+    provideHttpClient() //import para usar httpClient para llamadas a API
   ]
 };

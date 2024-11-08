@@ -1,6 +1,6 @@
 import { Component, Inject, inject, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { min, Subscription, timestamp } from 'rxjs';
+import { AbstractControl, FormArray, FormControl, FormGroup, MinLengthValidator, ReactiveFormsModule, UntypedFormArray, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { min, retry, Subscription, timestamp } from 'rxjs';
 import { Product } from '../../models/product';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order';
@@ -25,7 +25,7 @@ export class NewOrderComponent implements OnInit{
   //variable Subscription para manejar el tema de las subscripciones
   subscription = new Subscription();
   //Injects
-  private orderService = inject(OrderService);
+  private readonly orderService = inject(OrderService);
   private readonly router = inject(Router);
   //variable para tener la fecha actual
   today = new Date();
@@ -35,7 +35,7 @@ export class NewOrderComponent implements OnInit{
   form = new UntypedFormGroup({
     customerName: new UntypedFormControl("",[Validators.required, Validators.minLength(3)]),
     email: new UntypedFormControl("",[Validators.required, Validators.email]),
-    products: new UntypedFormArray([], [minLengthArray(1), maxLengthArray(10)]),
+    products: new UntypedFormArray([], [minLengthArray(1), maxLengthArray(10), this.uniqueProductValidator]),
     total: new UntypedFormControl(0),
     orderCode: new UntypedFormControl(""), //lo cargo cuando se confirme el formulario
     timestamp: new UntypedFormControl(this.today) 
@@ -52,7 +52,7 @@ export class NewOrderComponent implements OnInit{
     const formArray = this.form.controls["products"] as UntypedFormArray;
     const productForm = new UntypedFormGroup({
       product: new UntypedFormControl("", [Validators.required]),
-      quantity: new UntypedFormControl(0, [Validators.required, Validators.min(1)]),
+      quantity: new UntypedFormControl(1, [Validators.required, Validators.min(1)]),
       price: new UntypedFormControl(0, [Validators.required]), 
       stock: new UntypedFormControl(0, [Validators.required])
     });
@@ -136,6 +136,19 @@ export class NewOrderComponent implements OnInit{
     return product ? product.name : 'Producto desconocido';
   }
 
+  //Validator de que no se pueda selecciona un mismo producto en una orden
+  //es una validacion sincronica (porque no hace una llamada a la api)
+  uniqueProductValidator(control: AbstractControl): ValidationErrors | null {
+    if (!(control instanceof FormArray)) {
+      return null;
+    }
+    const selectedProductIds = control.controls.map((control) => control.get('product')?.value as number);
+    const hasDuplicates = selectedProductIds.some((id, index) => selectedProductIds.indexOf(id) !== index);
+    return hasDuplicates ? { duplicateProducts: true } : null;
+  }
+
+  //la validacion async iria aca, en el proyecto del profe se llama emailOrdderLimitValidator()
+
   //Save que se llama cuando se hace submit al form
   save(){
     if(this.form.invalid){
@@ -145,7 +158,7 @@ export class NewOrderComponent implements OnInit{
     }
     this.generateOrderCode();
     const orden : Order = this.form.value;
-    const addSubscription = this.orderService.add(orden).subscribe({
+    const addSubscription = this.orderService.addOrder(orden).subscribe({
       next: () => {
         this.router.navigate(['orders']);
       },

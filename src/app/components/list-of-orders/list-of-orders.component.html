@@ -5,7 +5,8 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <input type="text" class="form-control mb-4" placeholder="Search by customer name or email...">
+            <!--Filtro por name o email-->
+            <input type="text" class="form-control mb-4" [formControl]="searchTerm" placeholder="Search by customer name or email...">
             <table class="table table-striped">
                 <thead>
                     <tr>

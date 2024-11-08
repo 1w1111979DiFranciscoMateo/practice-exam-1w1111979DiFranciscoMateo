@@ -13,11 +13,12 @@ export class OrderService {
   //dentro de Providers[] hay que agregar provideHttpClient() 
   //inject
   private readonly http : HttpClient = inject(HttpClient);
-  //url
-  private readonly url = 'https://672a987e976a834dd023dde7.mockapi.io';
+  //url si uso mockapi.io 
+  //private readonly url = 'https://672a987e976a834dd023dde7.mockapi.io';
+  private readonly url = 'http://localhost:3000'
 
   //metodo Agregar una orden
-  add(orden : Order) : Observable<Order>{
+  addOrder(orden : Order) : Observable<Order>{
     return this.http.post<Order>(this.url + "/orders", orden);
   }
 
@@ -29,5 +30,11 @@ export class OrderService {
   //metodo para recibir todas las ordenes como array
   getAllOrders() : Observable <Order[]> {
     return this.http.get<Order[]>(this.url + "/orders");
+  }
+
+  //metodo para recibir una array de orders dependiendo de un email 
+  //que le pasamos como parametro
+  getOrderByEmail(email : string) : Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.url}/orders?email=${email}`);
   }
 }
