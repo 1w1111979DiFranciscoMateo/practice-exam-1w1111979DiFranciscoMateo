@@ -1,5 +1,3 @@
-import { Product } from "./product"
-
 export interface Order{
     id : string;
     customerName : string;

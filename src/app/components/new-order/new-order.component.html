@@ -30,6 +30,10 @@
                         }
                     }
                 }
+                <!--Validaciones Async de Email-->
+                @if (products.invalid && form.get('email')?.hasError('errorPedido') ) {
+                    <span class="text-danger">Se llegó al maximo de 3 compras por dia con este email</span>
+                }
             </div>
         </div>
         <!--Lista de Productos (FormArray)-->
@@ -82,16 +86,17 @@
                     </div>
                 }
                 <div>
-                    <!--Validaciones generales productos-->
+                    <!--Validaciones Sincronas generales de productos-->
                     @if (products.invalid  && products.hasError('minLengthArray')) {
-                        <span style="color: red;">La orden debe tener al menos 1 producto</span>
+                        <span class="text-danger">La orden debe tener al menos 1 producto</span>
                     }
                     @if (products.invalid && products.hasError('maxLengthArray')) {
-                        <span style="color: red;">La orden no puede tener más de 10 productos</span>
+                        <span class="text-danger">La orden no puede tener más de 10 productos</span>
                     }
                     @if (products.invalid && products.hasError('duplicateProducts')) {
                         <span class="text-danger">El producto ya ha sido seleccionado</span>
                     }
+                    <br>
                 </div>
             </div>
         </div>
@@ -118,6 +123,11 @@
             <div class="card-body align-items-center row">
                 <label for="total" class="form-label col">Total</label>
                 <span class="form-control col">{{form.controls['total'].value | currency}}</span>
+            </div>
+            <div class="row card-body">
+                @if (totalDiscount) {
+                    <span class="col text-success">10% de descuento aplicado!</span>
+                }
             </div>
         </div>
         <!--Boton Create Order-->
