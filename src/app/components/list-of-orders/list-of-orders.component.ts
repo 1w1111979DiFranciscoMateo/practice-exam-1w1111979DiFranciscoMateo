@@ -6,11 +6,12 @@ import { RouterModule } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { CurrencyPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { OrdersTotalComponent } from '../orders-total/orders-total.component';
 
 @Component({
   selector: 'app-list-of-orders',
   standalone: true,
-  imports: [RouterModule, DatePipe, CurrencyPipe, ReactiveFormsModule],
+  imports: [RouterModule, DatePipe, CurrencyPipe, ReactiveFormsModule, OrdersTotalComponent],
   templateUrl: './list-of-orders.component.html',
   styleUrl: './list-of-orders.component.css'
 })
@@ -56,5 +57,11 @@ export class ListOfOrdersComponent implements OnInit{
     );
   }
 
+  //metodo recibir alert del hijo para verificar si el total es > a $3000
+  onGoalReach(verificador : boolean){
+    if(verificador == true){
+      alert("Felicitaciones! se llego al objetivo de ventas de $3000");
+    }
+  }
 
 }

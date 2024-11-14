@@ -113,6 +113,7 @@ export class NewOrderComponent implements OnInit{
       total += price * quantity;
     });
     //Aplicar un 10% de descuento si el total supera los $1000
+    this.totalDiscount = false;
     if(total > 1000){
       total = total * 0.9;
       this.totalDiscount = true;

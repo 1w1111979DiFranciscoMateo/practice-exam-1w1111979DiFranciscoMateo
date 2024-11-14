@@ -1,0 +1,7 @@
+.bg-primary {
+    background-color: #007bff !important; /* Color para admin */
+}
+
+.bg-secondary {
+    background-color: #6c757d !important; /* Color para user */
+}

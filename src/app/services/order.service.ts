@@ -16,6 +16,7 @@ export class OrderService {
   //url si uso mockapi.io 
   //private readonly url = 'https://672a987e976a834dd023dde7.mockapi.io';
   private readonly url = 'http://localhost:3000'
+  //comando para levantar el JSON Server = json-server --watch db.json
 
   //metodo Agregar una orden
   addOrder(orden : Order) : Observable<Order>{
