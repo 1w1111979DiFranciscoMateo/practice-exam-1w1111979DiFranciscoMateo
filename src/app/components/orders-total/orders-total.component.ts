@@ -35,7 +35,7 @@ export class OrdersTotalComponent implements OnChanges{
 
   //metodo para emitir el evento al padre si es que se cumple la condicion 
   eventEmit(){
-    if(this.totalSum >= 5000){
+    if(this.totalSum >= 7000){
       this.totalSumGoal.emit(true);
     }
   }

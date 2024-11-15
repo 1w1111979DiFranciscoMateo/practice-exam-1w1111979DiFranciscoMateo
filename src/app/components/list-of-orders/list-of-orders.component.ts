@@ -64,7 +64,7 @@ export class ListOfOrdersComponent implements OnInit, OnDestroy{
   //metodo recibir alert del hijo para verificar si el total es > a $3000
   onGoalReach(verificador : boolean){
     if(verificador == true){
-      alert("Felicitaciones! se llego al objetivo de ventas de $3000");
+      alert("Felicitaciones! se llego al objetivo de ventas de $7000");
     }
   }
 
