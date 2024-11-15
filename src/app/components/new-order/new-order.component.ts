@@ -85,6 +85,7 @@ export class NewOrderComponent implements OnInit, OnDestroy{
     productForm.controls['price'].valueChanges.subscribe(() => {
       this.orderTotal();
     });
+    
     formArray.push(productForm);
   }
   //este metodo se llama cuando se quiere eliminar un producto del formArray

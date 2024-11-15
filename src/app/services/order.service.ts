@@ -11,7 +11,7 @@ export class OrderService {
   constructor() { }
   //Para que funcionen las llamadas http, en app.config.ts 
   //dentro de Providers[] hay que agregar provideHttpClient() 
-  //inject
+  //inject de HttpClient
   private readonly http : HttpClient = inject(HttpClient);
   //url si uso mockapi.io 
   //private readonly url = 'https://672a987e976a834dd023dde7.mockapi.io';

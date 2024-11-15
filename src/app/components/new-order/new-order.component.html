@@ -6,6 +6,7 @@
             <div class="col">
                 <label for="customerName" class="form-label">Nombre</label>
                 <input type="text" id="customerName" class="form-control" formControlName="customerName">
+                <!-- Validaciones de un FormControl -->
                 @if (form.controls["customerName"]; as customerName) {
                     @if (customerName.touched && customerName.invalid) {
                         @if (customerName.getError('required')) {
@@ -20,6 +21,7 @@
             <div class="col">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" id="email" class="form-control" formControlName="email">
+                <!-- Validaciones de un FormControl -->
                 @if (form.controls["email"]; as email) {
                     @if (email.touched && email.invalid) {
                         @if (email.getError('required')) {
@@ -30,8 +32,8 @@
                         }
                     }
                 }
-                <!--Validaciones Async de Email-->
-                @if (products.invalid && form.get('email')?.hasError('errorPedido') ) {
+                <!--Validaciones Asincrona de Email-->
+                @if (form.invalid && form.get('email')?.hasError('errorPedido') ) {
                     <span class="text-danger">Se llegó al maximo de 3 compras por dia con este email</span>
                 }
             </div>
@@ -42,6 +44,7 @@
                 <h5>Productos</h5>
                 <button type="button" class="btn btn-primary" (click)="onNewProduct()">+</button>
             </div>
+            <!-- Comienzo del FormArray -->
             <div formArrayName="products" class="card-body">
                 @for (item of products.controls; track $index;) {
                     <div class="row mb-4" [formGroupName]="$index">
@@ -53,6 +56,7 @@
                                     <option [value]="product.id">{{ product.name }}</option>
                                 }
                             </select>
+                            <!-- Validacion de un FormControl dentro de un FormArray -->
                             @if (item.get('product')?.touched && item.get('product')?.invalid) {
                                 <span class="text-danger">Debe seleccionar un producto</span>
                             }
@@ -60,6 +64,7 @@
                         <div class="col">
                             <label for="quantity" class="form-label">Cantidad</label>
                             <input type="number" id="quantity" class="form-control" formControlName="quantity">
+                            <!-- Validacion de un FormControl dentro de un FormArray -->
                             @if (item.get('quantity')?.touched && item.get('quantity')?.invalid) {
                                 @if (item.get('quantity')?.errors?.['required']) {
                                     <span class="text-danger">Debe ingresar una cantidad</span>
