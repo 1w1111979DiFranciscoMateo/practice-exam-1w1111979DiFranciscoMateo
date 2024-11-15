@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormArray, ReactiveFormsModule, UntypedFormArray, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { catchError, map, Observable, of, Subscription, tap } from 'rxjs';
 import { Product } from '../../models/product';
@@ -16,11 +16,13 @@ import { minLengthArray, maxLengthArray } from '../../validators/custom-validato
   templateUrl: './new-order.component.html',
   styleUrl: './new-order.component.css'
 })
-export class NewOrderComponent implements OnInit{
-  
+export class NewOrderComponent implements OnInit, OnDestroy{
   ngOnInit(): void {
       //llamamos al metodo para cargar el select de productos
       this.loadProducts();
+  }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
   //variable Subscription para manejar el tema de las subscripciones
   subscription = new Subscription();
@@ -94,7 +96,7 @@ export class NewOrderComponent implements OnInit{
 
   //metodo para cargar la lista productsArray con datos de la api
   loadProducts(){
-    this.orderService.getAllProducts().subscribe({
+    const loadProductsSubsciption = this.orderService.getAllProducts().subscribe({
       next: (products : Product[]) => {
         this.productsArray = products;
       },
@@ -102,6 +104,7 @@ export class NewOrderComponent implements OnInit{
         alert("Error al cargar lista de productos");
       }
     });
+    this.subscription.add(loadProductsSubsciption);
   }
 
   //metodo para generar el valor total de la orden
@@ -145,7 +148,7 @@ export class NewOrderComponent implements OnInit{
     return product ? product.name : 'Producto desconocido';
   }
 
-  //Validator de que no se pueda selecciona un mismo producto en una orden
+  //Validator sincrono de que no se pueda selecciona un mismo producto en una orden
   //es una validacion sincronica (porque no hace una llamada a la api)
   uniqueProductValidator(control: AbstractControl): ValidationErrors | null {
     if (!(control instanceof FormArray)) {
@@ -156,7 +159,7 @@ export class NewOrderComponent implements OnInit{
     return hasDuplicates ? { duplicateProducts: true } : null;
   }
 
-  //validacion async, se conecta a una llamada a la api del service, utiliza rxjs
+  //Validator Asincrono, se conecta a una llamada a la api del service, utiliza rxjs
   //explicacion del profe en video, en la hs 1:41:00
   emailOrderLimitValidator() : AsyncValidatorFn {
     return (control : AbstractControl) : Observable<ValidationErrors | null> => {

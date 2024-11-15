@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Order } from '../../models/order';
 import { Subscription } from 'rxjs';
 import { OrderService } from '../../services/order.service';
@@ -15,7 +15,7 @@ import { OrdersTotalComponent } from '../orders-total/orders-total.component';
   templateUrl: './list-of-orders.component.html',
   styleUrl: './list-of-orders.component.css'
 })
-export class ListOfOrdersComponent implements OnInit{
+export class ListOfOrdersComponent implements OnInit, OnDestroy{
   ngOnInit(): void {
     //llamamos al metodo loadOrders() para que se ejecute ni bien se abra la pag
     this.loadOrders();
@@ -24,6 +24,9 @@ export class ListOfOrdersComponent implements OnInit{
     this.searchTerm.valueChanges.subscribe(() => {
       this.ordersArray = this.filterOrder();
     })
+  }
+  ngOnDestroy(): void {
+    this.subsciption.unsubscribe();
   }
   //variable Subscription para manejar el tema de las subscripciones
   subsciption = new Subscription();
@@ -37,11 +40,12 @@ export class ListOfOrdersComponent implements OnInit{
 
   //metodo para cargar las ordenes de la api en el array ordersArray
   loadOrders(){
-    this.orderService.getAllOrders().subscribe({
+    const loadOrdersSubscription = this.orderService.getAllOrders().subscribe({
       next: (orders : Order[]) => {
         this.ordersArray = orders;
       }
-    })
+    });
+    this.subsciption.add(loadOrdersSubscription);
   }
 
   //metodo par filtrar las ordenes por email y nombre
